@@ -1,2 +1,3 @@
 export const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!;
 export const WORKSPACE_ID = process.env.NEXT_PUBLIC_APPWRITE_WORKSPACE_ID!;
+export const STORAGE_ID = process.env.NEXT_PUBLIC_APPWRITE_STORAGE_ID!;

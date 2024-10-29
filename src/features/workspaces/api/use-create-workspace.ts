@@ -9,8 +9,8 @@ type RequestType = InferRequestType<(typeof client.api.workspace)["$post"]>;
 export const useCreateWorkspaces = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ json }) => {
-      const response = await client.api.workspace["$post"]({ json });
+    mutationFn: async ({ form }) => {
+      const response = await client.api.workspace["$post"]({ form });
       return await response.json();
     },
     onSuccess: () => {
