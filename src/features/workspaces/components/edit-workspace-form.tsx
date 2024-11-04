@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { createWorkspaceSchema, updateWorkspaceSchema } from "../schemas";
+import { updateWorkspaceSchema } from "../schemas";
 import { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/dotted-separator";
@@ -15,26 +15,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCreateWorkspaces } from "../api/use-create-workspace";
 import { useRef } from "react";
 import Image from "next/image";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { ImageIcon } from "lucide-react";
+import { ArrowLeftIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
+import { useUpdateWorkspaces } from "../api/use-update-workspace";
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
   initialValues: Workspace;
 }
 
-export const CreateWorkspaceForm = ({
+export const EditWorkspaceForm = ({
   onCancel,
   initialValues,
 }: EditWorkspaceFormProps) => {
-  const { mutate, isPending } = useCreateWorkspaces();
+  const { mutate, isPending } = useUpdateWorkspaces();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,7 +46,7 @@ export const CreateWorkspaceForm = ({
   const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
       ...values,
-      image: values.image instanceof File ? values.image : undefined,
+      image: values.image instanceof File ? values.image : "",
     };
     mutate(
       { form: finalValues, param: { workspaceId: initialValues.$id } },
@@ -69,8 +69,21 @@ export const CreateWorkspaceForm = ({
 
   return (
     <Card className=" w-full h-full border-none shadow-none">
-      <CardHeader className="flex p-7">
-        <CardTitle className="text-xl font-bold">
+      <CardHeader className="flex flex-row items-center gap-x-4 space-y-0">
+        <Button
+          type="button"
+          variant={"secondary"}
+          size={"sm"}
+          onClick={
+            onCancel
+              ? onCancel
+              : () => router.push(`/workspaces/${initialValues.$id}`)
+          }
+        >
+          <ArrowLeftIcon className="size-4" />
+          Back
+        </Button>
+        <CardTitle className=" text-xl font-bold">
           {initialValues.name}
         </CardTitle>
       </CardHeader>
@@ -133,16 +146,34 @@ export const CreateWorkspaceForm = ({
                           onChange={handleImageChange}
                           disabled={isPending}
                         />
-                        <Button
-                          type="button"
-                          disabled={isPending}
-                          variant={"teritary"}
-                          size={"xs"}
-                          className="w-fit mt-2"
-                          onClick={() => inputRef.current?.click()}
-                        >
-                          Upload Image
-                        </Button>
+                        {field.value ? (
+                          <Button
+                            type="button"
+                            disabled={isPending}
+                            variant={"destructive"}
+                            size={"xs"}
+                            className="w-fit mt-2"
+                            onClick={() => {
+                              field.onChange(null);
+                              if (inputRef.current) {
+                                inputRef.current.value = "";
+                              }
+                            }}
+                          >
+                            Remove Image
+                          </Button>
+                        ) : (
+                          <Button
+                            type="button"
+                            disabled={isPending}
+                            variant={"teritary"}
+                            size={"xs"}
+                            className="w-fit mt-2"
+                            onClick={() => inputRef.current?.click()}
+                          >
+                            Upload Image
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -164,7 +195,7 @@ export const CreateWorkspaceForm = ({
                 Cancel
               </Button>
               <Button type="submit" size={"lg"} disabled={isPending}>
-                Create workspace
+                Save Changes
               </Button>
             </div>
           </form>
