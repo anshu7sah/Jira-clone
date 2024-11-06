@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { Workspace } from "../types";
 import { useUpdateWorkspaces } from "../api/use-update-workspace";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteWorkspaces } from "../api/use-delete-workspace";
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
@@ -36,6 +37,8 @@ export const EditWorkspaceForm = ({
   initialValues,
 }: EditWorkspaceFormProps) => {
   const { mutate, isPending } = useUpdateWorkspaces();
+  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
+    useDeleteWorkspaces();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -78,10 +81,24 @@ export const EditWorkspaceForm = ({
     const ok = await confirmDelete();
 
     if (!ok) return;
+
+    deleteWorkspace(
+      {
+        param: {
+          workspaceId: initialValues.$id,
+        },
+      },
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+      }
+    );
   };
 
   return (
     <div className="flex flex-col gap-y-4">
+      <DeleteDialog />
       <Card className=" w-full h-full border-none shadow-none">
         <CardHeader className="flex flex-row items-center gap-x-4 space-y-0">
           <Button
@@ -163,7 +180,7 @@ export const EditWorkspaceForm = ({
                           {field.value ? (
                             <Button
                               type="button"
-                              disabled={isPending}
+                              disabled={isPending || isDeletingWorkspace}
                               variant={"destructive"}
                               size={"xs"}
                               className="w-fit mt-2"
@@ -179,7 +196,7 @@ export const EditWorkspaceForm = ({
                           ) : (
                             <Button
                               type="button"
-                              disabled={isPending}
+                              disabled={isPending || isDeletingWorkspace}
                               variant={"teritary"}
                               size={"xs"}
                               className="w-fit mt-2"
@@ -203,7 +220,7 @@ export const EditWorkspaceForm = ({
                   variant={"secondary"}
                   size={"lg"}
                   onClick={onCancel}
-                  disabled={isPending}
+                  disabled={isPending || isDeletingWorkspace}
                   className={cn(!onCancel && "invisible")}
                 >
                   Cancel
@@ -229,8 +246,8 @@ export const EditWorkspaceForm = ({
               variant={"destructive"}
               type="button"
               size={"sm"}
-              disabled={isPending}
-              onClick={() => {}}
+              disabled={isPending || isDeletingWorkspace}
+              onClick={() => handleDelete()}
             >
               Delete Workspace
             </Button>
