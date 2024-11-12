@@ -8,9 +8,7 @@ import { z } from "zod";
 import { getMembers } from "../utils";
 import { MemberRole } from "../types";
 
-const app = new Hono();
-
-app
+const app = new Hono()
   .get(
     "/",
     sessionMiddleware,
