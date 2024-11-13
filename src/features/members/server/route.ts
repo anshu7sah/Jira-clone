@@ -65,7 +65,7 @@ const app = new Hono()
     const allMembersInWorkspace = await databases.listDocuments(
       DATABASE_ID,
       MEMBER_ID,
-      [Query.equal("worksapceId", memberToDelete.workspaceId)]
+      [Query.equal("workspaceId", memberToDelete.workspaceId)]
     );
 
     const member = await getMembers({
