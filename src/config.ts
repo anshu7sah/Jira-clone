@@ -2,3 +2,4 @@ export const DATABASE_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!;
 export const WORKSPACE_ID = process.env.NEXT_PUBLIC_APPWRITE_WORKSPACE_ID!;
 export const STORAGE_ID = process.env.NEXT_PUBLIC_APPWRITE_STORAGE_ID!;
 export const MEMBER_ID = process.env.NEXT_PUBLIC_APPWRITE_MEMBER_ID!;
+export const PROJECTS_ID = process.env.NEXT_PUBLIC_APPWRITE_PROJECTS_ID!;
