@@ -1,6 +1,7 @@
 "use client";
 
 import { useFetchProjects } from "@/features/projects/api/use-fetch-projects";
+import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { useCreateProjectModal } from "@/features/projects/hooks/use-create-projects-modal";
 import { useWorkspacesId } from "@/features/workspaces/hooks/use-workspaces-id";
 import { cn } from "@/lib/utils";
@@ -22,24 +23,24 @@ export const Projects = () => {
           className="cursor-pointer size-5 text-neutral-500 hover:opacity-75 transition"
           onClick={open}
         />
-        {data?.documents.map((project) => {
-          const href = `/workspaces/${workspaceId}/projects/${projectId}`;
-          const isActive = pathname === href;
-          return (
-            <Link href={href} key={project.$id}>
-              <div
-                className={cn(
-                  "flex items-center gap-2.5 rounded-md hover:opacity-75 transition cursor-pointer text-neutral-500",
-                  isActive &&
-                    "bg-white shadow-sm hover:opacity-100 text-primary"
-                )}
-              >
-                <span className="truncate">{project?.name}</span>
-              </div>
-            </Link>
-          );
-        })}
       </div>
+      {data?.documents.map((project) => {
+        const href = `/workspaces/${workspaceId}/projects/${projectId}`;
+        const isActive = pathname === href;
+        return (
+          <Link href={href} key={project.$id}>
+            <div
+              className={cn(
+                "flex items-center gap-2.5 p-2.5 rounded-md hover:opacity-75 transition cursor-pointer text-neutral-500",
+                isActive && "bg-white shadow-sm hover:opacity-100 text-primary"
+              )}
+            >
+              <ProjectAvatar name={project?.name} image={project?.imageUrl} />
+              <span className="truncate">{project?.name}</span>
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 };
