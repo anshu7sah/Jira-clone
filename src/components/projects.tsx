@@ -1,6 +1,7 @@
 "use client";
 
 import { useFetchProjects } from "@/features/projects/api/use-fetch-projects";
+import { useCreateProjectModal } from "@/features/projects/hooks/use-create-projects-modal";
 import { useWorkspacesId } from "@/features/workspaces/hooks/use-workspaces-id";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -11,6 +12,7 @@ export const Projects = () => {
   const pathname = usePathname();
   const workspaceId = useWorkspacesId();
   const projectId = "";
+  const { open } = useCreateProjectModal();
   const { data } = useFetchProjects({ workspaceId });
   return (
     <div className="flex flex-col gap-y-2">
@@ -18,7 +20,7 @@ export const Projects = () => {
         <p className="text-xs uppercase text-neutral-500 ">Projects</p>
         <RiAddCircleFill
           className="cursor-pointer size-5 text-neutral-500 hover:opacity-75 transition"
-          onClick={() => {}}
+          onClick={open}
         />
         {data?.documents.map((project) => {
           const href = `/workspaces/${workspaceId}/projects/${projectId}`;
